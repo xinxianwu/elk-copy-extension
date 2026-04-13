@@ -1,0 +1,39 @@
+.elk-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  flex-shrink: 0;
+  padding: 0 4px;
+  min-height: 1.25em;
+  font-size: 12px;
+  line-height: 1.25;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  vertical-align: middle;
+  z-index: 2;
+}
+
+/* 游標在同一列（field+value）任一處即顯示 */
+.elk-doc-row:hover .elk-copy-btn {
+  opacity: 1;
+}
+
+.elk-copy-btn:hover {
+  background: #e0e0e0;
+}
+
+/* 與欄位名同一行時垂直置中（父層常為 align-items: flex-start） */
+.kbnDocViewer__tableFieldNameCell .euiFlexGroup .elk-copy-btn {
+  align-self: center;
+}
+
+.kbnFieldName .elk-copy-btn {
+  align-self: center;
+  vertical-align: middle;
+  margin-left: 4px;
+}

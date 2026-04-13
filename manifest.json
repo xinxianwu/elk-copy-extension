@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "ELK Field Copy",
+    "version": "1.0",
+    "description": "在 Kibana 每個欄位旁加上複製按鈕",
+    "permissions": ["clipboardWrite"],
+    "content_scripts": [
+      {
+        "matches": ["*://*/*"],
+        "js": ["content_script.js"],
+        "css": ["styles.css"],
+        "run_at": "document_idle",
+        "all_frames": true
+      }
+    ]
+  }
