@@ -1,3 +1,18 @@
+(function () {
+  if (window.__elkFieldCopyInjected) return;
+
+  function urlLooksLikeKibana() {
+    try {
+      const { hostname, href, pathname } = window.location;
+      return /kibana/i.test(hostname) || /kibana/i.test(pathname) || /kibana/i.test(href);
+    } catch {
+      return false;
+    }
+  }
+
+  if (!urlLooksLikeKibana()) return;
+  window.__elkFieldCopyInjected = true;
+
 const BUTTON_CLASS = 'elk-copy-btn';
 const ROW_CLASS = 'elk-doc-row';
 
@@ -140,3 +155,5 @@ addCopyButtons();
 
 const observer = new MutationObserver(() => addCopyButtons());
 observer.observe(document.body, { childList: true, subtree: true });
+
+})();
