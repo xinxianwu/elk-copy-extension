@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "ELK Field Copy",
-  "version": "1.0",
+  "version": "1.1",
   "description": "在 Kibana 每個欄位旁加上複製按鈕",
   "permissions": ["clipboardWrite", "tabs", "offscreen"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "icons": {
     "16": "icons/icon16.png",
@@ -23,7 +24,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["content_script.js"],
+      "js": ["content/CopyButton.js", "content/ClipboardService.js", "content/KibanaDocViewerPage.js", "content/injector.js"],
       "css": ["styles.css"],
       "run_at": "document_idle",
       "all_frames": true

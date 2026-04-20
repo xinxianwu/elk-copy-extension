@@ -15,9 +15,10 @@ esac
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-cp manifest.json background.js content_script.js styles.css "$TMP/"
-cp -R icons "$TMP/"
+cp manifest.json background.js styles.css "$TMP/"
+cp -R background content offscreen icons "$TMP/"
 
+rm -f "$ZIP_PATH"
 ( cd "$TMP" && zip -rq "$ZIP_PATH" . )
 
 echo "已建立: $ZIP_PATH ($(du -h "$ZIP_PATH" | cut -f1))"
