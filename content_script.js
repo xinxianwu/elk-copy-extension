@@ -16,7 +16,6 @@
 const BUTTON_CLASS = 'elk-copy-btn';
 const ROW_CLASS = 'elk-doc-row';
 
-/** Kibana Doc viewer / DataGrid：包住同一筆 field–value 的列容器 */
 function findDocRow(valueEl) {
   return (
     valueEl.closest('.kbnDocViewer__tableRow') ||
@@ -26,10 +25,6 @@ function findDocRow(valueEl) {
   );
 }
 
-/**
- * 把按鈕放在「欄位名稱」那一格。
- * EuiTable 版 unified doc viewer：第二欄為 .kbnDocViewer__tableFieldNameCell（不一定有 …-field 的 test subj）
- */
 function findFieldButtonHost(valueEl, row) {
   const euiFieldName = row.querySelector('.kbnDocViewer__tableFieldNameCell');
   if (euiFieldName) return euiFieldName;
@@ -51,10 +46,6 @@ function findFieldButtonHost(valueEl, row) {
   return null;
 }
 
-/**
- * 插在「欄位名字」旁，不要 append 在整格 .kbnDocViewer__tableFieldNameCell 底層
- * （會變成與「圖示區」「名稱區」並列的第三個 flex 子項，被撐到欄位最右）
- */
 function mountCopyButtonBesideFieldName(fieldNameCell, btn) {
   const nameText =
     fieldNameCell.querySelector('.kbnFieldName__name') ||
@@ -91,7 +82,6 @@ function getCopyText(valueEl) {
 
 function addCopyButtons() {
   const selectors = [
-    // EuiTable doc viewer：第三欄 value（與 .kbnDocViewer__tableFieldNameCell 同列）
     '.kbnDocViewer__tableValueCell',
     'td[data-test-subj="tableDocViewRow-value"]',
     'td[data-test-subj^="tableDocViewRow-"][data-test-subj$="-value"]',
@@ -124,21 +114,19 @@ function addCopyButtons() {
       btn.textContent = '⎘';
       btn.type = 'button';
 
-      btn.addEventListener('click', async (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const value = getCopyText(valueCell);
-        try {
-          await navigator.clipboard.writeText(value);
-          btn.textContent = '✓';
-          setTimeout(() => {
-            btn.textContent = '⎘';
-          }, 1500);
-        } catch {
-          btn.textContent = '✗';
-          setTimeout(() => {
-            btn.textContent = '⎘';
-          }, 1500);
-        }
+        // Route through background → offscreen document so clipboard write always
+        // runs in a secure extension context, even when the page is HTTP.
+        chrome.runtime.sendMessage({ type: 'COPY_TEXT', text: value }, (response) => {
+          if (chrome.runtime.lastError || !response?.ok) {
+            btn.textContent = '✗';
+          } else {
+            btn.textContent = '✓';
+          }
+          setTimeout(() => { btn.textContent = '⎘'; }, 1500);
+        });
       });
 
       if (host.classList.contains('kbnDocViewer__tableFieldNameCell')) {
